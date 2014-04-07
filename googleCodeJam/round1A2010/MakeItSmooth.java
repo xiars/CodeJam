@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import path.SourcePath;
 
@@ -18,6 +16,7 @@ import path.SourcePath;
  */
 public class MakeItSmooth {
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try {
