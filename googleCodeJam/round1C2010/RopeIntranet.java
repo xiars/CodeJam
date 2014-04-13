@@ -23,8 +23,8 @@ public class RopeIntranet {
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try {
-			FileReader fr = new FileReader(SourcePath.getInputPath() + "/googleCodeJam/round1C2010/A-large-practice.in");
-			FileWriter fw = new FileWriter(SourcePath.getOutputPath() + "/googleCodeJam/round1C2010/A-large-practice.out");
+			FileReader fr = new FileReader(SourcePath.getInputPath() + "/googleCodeJam/round1C2010/A-small-practice.in");
+			FileWriter fw = new FileWriter(SourcePath.getOutputPath() + "/googleCodeJam/round1C2010/A-small-practice.out");
 
 			BufferedReader br = new BufferedReader(fr);
 			BufferedWriter bw = new BufferedWriter(fw);
