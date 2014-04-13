@@ -107,38 +107,38 @@ Case #5:
  *
  */
 public class MinesweeperMaster {
-	
+
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try {
-			FileReader fr = new FileReader(SourcePath.getInputPath() + "/googleCodeJam/roundqualification2014/C-large-practice.in");
-			FileWriter fw = new FileWriter(SourcePath.getOutputPath() + "/googleCodeJam/roundqualification2014/C-large-practice.out");
+			FileReader fr = new FileReader(SourcePath.getInputPath() + "/googleCodeJam/roundqualification2014/C-small-practice.in");
+			FileWriter fw = new FileWriter(SourcePath.getOutputPath() + "/googleCodeJam/roundqualification2014/C-small-practice.out");
 
 			BufferedReader br = new BufferedReader(fr);
 			BufferedWriter bw = new BufferedWriter(fw);
 			int numOfCases = Integer.valueOf(br.readLine());
-			
+
 			StringBuffer outPut = new StringBuffer();
-			
+
 			String result;
-			
+
 			String[] caseKeys;
 			int rows;
 			int columns;
 			int mines;
-			
+
 			for (int i = 0; i < numOfCases; i++){
 				caseKeys = br.readLine().split(" ");
 				rows = Integer.parseInt(caseKeys[0]);
 				columns = Integer.parseInt(caseKeys[1]);
 				mines = Integer.parseInt(caseKeys[2]);
-				
+
 				result = getConfiguration(rows, columns, mines);
-				
+
 				System.out.println("Case #" + (i + 1) + ": " + result);
 				outPut.append("Case #").append(i+1).append(": ").append(result).append("\n");
 			}
-			
+
 			br.close();
 			fr.close();
 			bw.write(outPut.toString());
@@ -152,91 +152,36 @@ public class MinesweeperMaster {
 			e.printStackTrace();
 		}
 		long end = System.currentTimeMillis();
-		
+
 		System.out.println(end - start);
 	}
-	
-//	private static String getConfiguration(int rows, int columns, int mines){
-//		String imposible = "\nImpossible";
-//		StringBuilder configuration = new StringBuilder();
-//		
-////		String[][] configArray = new String[rows][columns];
-////		
-////		if (rows == 1 || columns == 1 || mines == 1 || rows * columns - mines == 1){
-////			for (int i = 0; i < rows; i++){
-////				configuration.append("\n");
-////				for (int j = 0; j < columns; j++){
-////					if (i == 0 && j == 0){
-////						configuration.append("c");
-////					} else {
-////						if ((rows * columns - mines) > (i * j + j + 1)){
-////							configuration.append(".");
-////						} else {
-////							configuration.append("*");
-////						}
-////					}
-////				}
-////			}
-////		} else {
-////			for (int i = 0; i < rows * columns; i++){
-////				configuration.append(".");
-////			}
-////		}
-//		Map<String, Integer> configMap = getConfigMap(rows, columns, mines);
-//		
-//		Iterator<String> iterator = configMap.keySet().iterator();
-//		
-//		String configKey = "";
-//		boolean result = false;
-//		
-//		while (iterator.hasNext()){
-//			configKey = iterator.next();
-//			
-//			if (configMap.get(configKey) == mines){
-//				
-//				result = isConfigWin(configKey);
-//				
-//				if (result == true){
-//					break;
-//				}
-//			}
-//		}
-//		
-//		if (result == false){
-//			configuration.append(imposible);
-//		} else {
-//			configuration.append(getWinningConfig(configKey));
-//		}
-//		
-//		return configuration.toString();
-//	}
-//	
+
 	private static String getConfiguration(int rows, int columns, int mines){
-		
+
 		String result = "\nImpossible";
 		StringBuilder configBuilder = null;
 		String config;
-		
+
 		int cells = rows * columns;
 		int mapSize = (int) Math.pow(2, cells);
-		
+
 		for (int i = 0; i < mapSize; i++){
 			if (countMines(i) != mines){
 				continue;
 			}
-			
+
 			configBuilder = new StringBuilder(cells);
 			config = Integer.toBinaryString(i);
-			
+
 			if (config.length() != cells){
 				for (int j = 0; j < cells - config.length(); j++){
 					configBuilder.append(".");
 				}
 			}
-			
+
 			configBuilder.append(config);
 			config = configBuilder.toString().replace("0", ".").replace("1", "*");
-			
+
 			String[] configIndex = new String[1];
 			configIndex[0] = config;
 			if (isConfigWin(configIndex, rows, columns)){
@@ -244,10 +189,10 @@ public class MinesweeperMaster {
 				break;
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private static int countMines(int x) {  
         int c = 0;  
         for (; x > 0; c++) {  
@@ -255,30 +200,30 @@ public class MinesweeperMaster {
         }  
         return c;  
     }
-	
+
 	private static boolean isConfigWin(String[] configIndex, int rows, int columns){
 		String config = configIndex[0];
 		boolean isConfigWin = false;
 		char[] configChar = config.toCharArray();
-		
+
 		String[][] configArray = new String[rows][columns];
-		
+
 		for (int i = 0; i < rows; i++){
 			for (int j = 0; j < columns; j++){
 				configArray[i][j] = String.valueOf(configChar[i * columns + j]);
 			}
 		}
-		
-		
+
+
 		String[][] clickConfig;
 		for (int i = 0; i < rows; i++){
 			for (int j = 0; j < columns; j++){
 				if (configArray[i][j].equals("*")){
 					continue;
 				}
-				
+
 				clickConfig = reveal(configArray, rows, columns, i, j);
-				
+
 				if (checkConfig(clickConfig, rows, columns)){
 					isConfigWin = true;
 					configArray[i][j] = "c";
@@ -288,10 +233,10 @@ public class MinesweeperMaster {
 				}
 			}
 		}
-		
+
 		return isConfigWin;
 	}
-	
+
 	private static String[][] reveal(String[][] configArray, int rows, int columns, int i, int j){
 		String[][] clickConfig = new String[rows][columns];
 		for (int m = 0; m < rows; m++){
@@ -299,42 +244,42 @@ public class MinesweeperMaster {
 				clickConfig[m][n] = configArray[m][n];
 			}
 		}
-		
+
 		int cellNum = getRoundMines(clickConfig, rows, columns, i, j);
 		clickConfig[i][j] = String.valueOf(cellNum);
 		if (cellNum == 0){
-			if (i > 0 && !clickConfig[i - 1][j].equals("0")){
+			if (i > 0 && clickConfig[i - 1][j].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i - 1, j);
 			}
-			if (i > 0 && j > 0 && !clickConfig[i - 1][j - 1].equals("0")){
+			if (i > 0 && j > 0 && clickConfig[i - 1][j - 1].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i - 1, j - 1);
 			}
-			if (j > 0 && !clickConfig[i][j - 1].equals("0")){
+			if (j > 0 && clickConfig[i][j - 1].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i, j - 1);
 			}
-			if (j > 0 && i < rows - 1 && !clickConfig[i + 1][j - 1].equals("0")){
+			if (j > 0 && i < rows - 1 && clickConfig[i + 1][j - 1].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i + 1, j - 1);
 			}
-			if (i < rows - 1 && !clickConfig[i + 1][j].equals("0")){
+			if (i < rows - 1 && clickConfig[i + 1][j].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i + 1, j);
 			}
-			if (i < rows - 1 && j < columns - 1 && !clickConfig[i + 1][j + 1].equals("0")){
+			if (i < rows - 1 && j < columns - 1 && clickConfig[i + 1][j + 1].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i + 1, j + 1);
 			}
-			if (j < columns - 1 && !clickConfig[i][j + 1].equals("0")){
+			if (j < columns - 1 && clickConfig[i][j + 1].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i, j + 1);
 			}
-			if (j < columns - 1 && i > 0 && !clickConfig[i - 1][j + 1].equals("0")){
+			if (j < columns - 1 && i > 0 && clickConfig[i - 1][j + 1].equals(".")){
 				clickConfig = reveal(clickConfig, rows, columns, i - 1, j + 1);
 			}
 		}
-		
+
 		return clickConfig;
 	}
-	
+
 	private static boolean checkConfig(String[][] clickConfig, int rows, int columns){
 		boolean check = true;
-		
+
 		for (int i = 0; i < rows; i++){
 			for (int j = 0; j < columns; j++){
 				if (clickConfig[i][j].equals(".")){
@@ -343,10 +288,10 @@ public class MinesweeperMaster {
 				}
 			}
 		}
-		
+
 		return check;
 	}
-	
+
 	private static int getRoundMines(String[][] configArray, int rows, int columns, int i, int j){
 		int roundMines = 0;
 		if (i > 0 && configArray[i - 1][j].equals("*")){
@@ -375,18 +320,18 @@ public class MinesweeperMaster {
 		}
 		return roundMines;
 	}
-	
+
 	private static String getWinningConfig(String[] configIndex, int rows, int columns){
 		StringBuilder winningBuilder = new StringBuilder();
 		String config = configIndex[0];
-		
+
 		for (int i = 0; i < rows; i++){
 			winningBuilder.append("\n").append(config.substring(i * columns, i * columns + columns));
 		}
-		
+
 		return winningBuilder.toString();
 	}
-	
+
 	private static String arrayToString(String[][] clickConfig, int rows, int columns){
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < rows; i++){
