@@ -111,8 +111,8 @@ public class MinesweeperMaster {
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		try {
-			FileReader fr = new FileReader(SourcePath.getInputPath() + "/googleCodeJam/roundqualification2014/C-small-practice.in");
-			FileWriter fw = new FileWriter(SourcePath.getOutputPath() + "/googleCodeJam/roundqualification2014/C-small-practice.out");
+			FileReader fr = new FileReader(SourcePath.getInputPath() + "/googleCodeJam/roundqualification2014/C-large-practice.in");
+			FileWriter fw = new FileWriter(SourcePath.getOutputPath() + "/googleCodeJam/roundqualification2014/C-large-practice.out");
 
 			BufferedReader br = new BufferedReader(fr);
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -157,16 +157,55 @@ public class MinesweeperMaster {
 	}
 
 	private static String getConfiguration(int rows, int columns, int mines){
+		
+		/*
+		 * .*
+		 * ****
+		 * ****
+		 */
+		int rows1 = rows;
+		int columns1 = columns;
+		int mines1 = mines;
+		/*
+		 * .***
+		 * ****
+		 */
+		if (mines > columns){
+			mines1 = mines % columns + columns;
+			rows1 = rows - (mines/columns) + 1;
+		}
+		
+		if (mines1 > mines){
+			mines1 = mines;
+			rows1 = rows;
+			columns1 = columns;
+		}
+		
+		if (mines1 > rows1){
+			columns1 = columns - (mines1/rows1) + 1;
+			mines1 = mines1 % rows1 + rows1;
+		}
+		
+		if (mines1 > mines){
+			mines1 = mines;
+			rows1 = rows;
+			columns1 = columns;
+		}
+		
+//		if (mines > columns){
+//			mines1 = mines % columns;
+//			columns1 = columns - (mines/columns);
+//		}
 
 		String result = "\nImpossible";
 		StringBuilder configBuilder = null;
 		String config;
 
-		int cells = rows * columns;
+		int cells = rows1 * columns1;
 		int mapSize = (int) Math.pow(2, cells);
 
 		for (int i = 0; i < mapSize; i++){
-			if (countMines(i) != mines){
+			if (countMines(i) != mines1){
 				continue;
 			}
 
@@ -184,8 +223,8 @@ public class MinesweeperMaster {
 
 			String[] configIndex = new String[1];
 			configIndex[0] = config;
-			if (isConfigWin(configIndex, rows, columns)){
-				result = getWinningConfig(configIndex, rows, columns);
+			if (isConfigWin(configIndex, rows1, columns1)){
+				result = getWinningConfig(configIndex, rows, columns, rows1, columns1);
 				break;
 			}
 		}
@@ -321,13 +360,29 @@ public class MinesweeperMaster {
 		return roundMines;
 	}
 
-	private static String getWinningConfig(String[] configIndex, int rows, int columns){
+	private static String getWinningConfig(String[] configIndex, int rows, int columns, int rows1, int columns1){
 		StringBuilder winningBuilder = new StringBuilder();
 		String config = configIndex[0];
-
-		for (int i = 0; i < rows; i++){
-			winningBuilder.append("\n").append(config.substring(i * columns, i * columns + columns));
+		
+		if (config.length() == rows * columns){
+			for (int i = 0; i < rows; i++){
+				winningBuilder.append("\n").append(config.substring(i * columns, i * columns + columns));
+			}
+		} else {
+			for (int i = 0; i < rows1; i++){
+				winningBuilder.append("\n").append(config.substring(i * columns1, i * columns1 + columns1));
+				for (int j = 0; j < columns - columns1; j++){
+					winningBuilder.append("*");
+				}
+			}
+			for (int i = 0; i < rows - rows1; i++){
+				winningBuilder.append("\n");
+				for (int j = 0; j < columns; j++){
+					winningBuilder.append("*");
+				}
+			}
 		}
+
 
 		return winningBuilder.toString();
 	}
